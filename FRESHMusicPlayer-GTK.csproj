@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="**\*.glade" />
+    <EmbeddedResource Include="**\*.glade">
+      <LogicalName>%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GtkSharp" Version="3.22.25.*" />
+    <PackageReference Include="LiteDB" Version="5.0.9" />
+    <PackageReference Include="NAudio" Version="1.10.0" />
+    <PackageReference Include="System.Composition" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FRESHMusicPlayer.Core">
+      <HintPath>..\..\..\OneDrive\FMPinWPF\FRESHMusicPlayer-WPFUI\FRESHMusicPlayer\FRESHMusicPlayer-WPF-UI-Test\Dependencies\FRESHMusicPlayer.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Backends\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Backends\FmpVlcBackend.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Backends\LibVLCSharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
