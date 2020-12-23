@@ -1,7 +1,8 @@
 using System;
+using FRESHMusicPlayer;
 using Gtk;
 
-namespace FRESHMusicPlayer_GTK
+namespace FRESHMusicPlayer
 {
     class Program
     {
