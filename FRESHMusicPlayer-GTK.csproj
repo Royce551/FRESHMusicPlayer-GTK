@@ -20,13 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FRESHMusicPlayer.Core">
-      <HintPath>..\..\..\OneDrive\FMPinWPF\FRESHMusicPlayer-WPFUI\FRESHMusicPlayer\FRESHMusicPlayer-WPF-UI-Test\Dependencies\FRESHMusicPlayer.Core.dll</HintPath>
-    </Reference>
+    <Folder Include="Backends\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Backends\" />
+    <Reference Include="FRESHMusicPlayer.Core">
+      <HintPath>Dependencies\FRESHMusicPlayer.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
