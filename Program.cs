@@ -1,5 +1,4 @@
 using System;
-using FRESHMusicPlayer;
 using Gtk;
 
 namespace FRESHMusicPlayer
