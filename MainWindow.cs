@@ -1,4 +1,4 @@
-using ATL;
+﻿using ATL;
 using System;
 using System.Timers;
 using Gtk;
@@ -16,7 +16,10 @@ namespace FRESHMusicPlayer
 
         [UI] Label TitleLabel = null;
         [UI] Label ArtistLabel = null;
-
+        [UI] Label ProgressLabel1 = null;
+        [UI] Label ProgressLabel2 = null;
+        [UI] Scale SeekBar = null;
+        [UI] Scale VolumeBar = null;
         [UI] Button PreviousButton = null;
         [UI] ToggleButton ShuffleButton = null;
         [UI] Button PlayPauseButton = null;
@@ -36,18 +39,28 @@ namespace FRESHMusicPlayer
             player.SongException += Player_SongException;
             Title = windowName;
             BrowseTracksButton.Clicked += BrowseTracksButton_Clicked;
-
             NextButton.Clicked += NextButton_Clicked;
             RepeatOneButton.Clicked += RepeatOneButton_Clicked;
             PlayPauseButton.Clicked += PlayPauseButton_Clicked;
             ShuffleButton.Clicked += ShuffleButton_Clicked;
             PreviousButton.Clicked += PreviousButton_Clicked;
             DeleteEvent += Window_DeleteEvent;
+            VolumeBar.ValueChanged += VolumeBar_ValueChanged;
+            VolumeBar.SetRange(0, 1);
+        }
+
+        private void VolumeBar_ValueChanged(object sender, EventArgs e)
+        {
+            if (player.Playing)
+            {
+                player.CurrentVolume = (float)VolumeBar.Value;
+                player.UpdateSettings();
+            }
         }
 
         private void Player_SongException(object sender, Handlers.PlaybackExceptionEventArgs e)
         {
-            throw new NotImplementedException();
+            // ignored for now
         }
 
         private void Player_SongStopped(object sender, EventArgs e)
@@ -63,6 +76,9 @@ namespace FRESHMusicPlayer
             Title = $"{currentTrack.Artist} - {currentTrack.Title} | {windowName}";
             TitleLabel.Text = currentTrack.Title;
             ArtistLabel.Text = currentTrack.Artist == string.Empty ? "No artist" : currentTrack.Artist;
+            SeekBar.SetRange(1, player.CurrentBackend.TotalTime.TotalSeconds);
+            if (player.CurrentBackend.TotalTime.TotalSeconds != 0) ProgressLabel2.Text = player.CurrentBackend.TotalTime.ToString(@"mm\:ss");
+            else ProgressLabel2.Text = "∞";
             progressTimer.Start();
         }
 
@@ -99,7 +115,10 @@ namespace FRESHMusicPlayer
         public void PreviousTrackMethod() => player.PreviousSong();
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-           
+            var time = TimeSpan.FromSeconds(Math.Floor(player.CurrentBackend.CurrentTime.TotalSeconds));
+            ProgressLabel1.Text = time.ToString(@"mm\:ss");
+            SeekBar.Value = time.TotalSeconds;
+            player.AvoidNextQueue = false;
         }
 
         private void BrowseTracksButton_Clicked(object sender, EventArgs e)
