@@ -6,7 +6,7 @@ namespace FRESHMusicPlayer
 {
     class MainWindow : Window
     {
-        Player player = new Player();
+        Player player = new();
         [UI] Button BrowseTracksButton = null;
 
         public MainWindow() : this(new Builder("MainWindow.glade")) { }
@@ -36,6 +36,5 @@ namespace FRESHMusicPlayer
         {
             Application.Quit();
         }
-
     }
 }
