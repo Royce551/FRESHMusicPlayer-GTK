@@ -2,53 +2,29 @@
 using System;
 using System.Timers;
 using Gtk;
+using System.IO;
 using UI = Gtk.Builder.ObjectAttribute;
+using LiteDB;
+using FRESHMusicPlayer.Handlers;
 
 namespace FRESHMusicPlayer
 {
-    class MainWindow : Window
+    partial class MainWindow : Window
     {
         Player player = new();
         Timer progressTimer = new Timer(1000);
         Track currentTrack;
-
-        [UI] Button BrowseTracksButton = null;
-
-        [UI] Label TitleLabel = null;
-        [UI] Label ArtistLabel = null;
-        [UI] Label ProgressLabel1 = null;
-        [UI] Label ProgressLabel2 = null;
-        [UI] Scale SeekBar = null;
-        [UI] Scale VolumeBar = null;
-        [UI] Button PreviousButton = null;
-        [UI] ToggleButton ShuffleButton = null;
-        [UI] Button PlayPauseButton = null;
-        [UI] ToggleButton RepeatOneButton = null;
-        [UI] Button NextButton = null;
+        LiteDatabase library = new LiteDatabase(System.IO.Path.Combine(DatabaseHandler.DatabasePath, "database.fdb2"));
+        DatabaseUtils databaseUtils;
 
         const string windowName = "FRESHMusicPlayer GTK";
 
-        public MainWindow() : this(new Builder("MainWindow.glade")) { }
-
-        private MainWindow(Builder builder) : base(builder.GetObject("MainWindow").Handle)
+        public MainWindow() : this(new Builder("MainWindow.glade")) 
         {
-            builder.Autoconnect(this);
-            progressTimer.Elapsed += Timer_Elapsed;
-            player.SongChanged += Player_SongChanged;
-            player.SongStopped += Player_SongStopped;
-            player.SongException += Player_SongException;
-            Title = windowName;
-            BrowseTracksButton.Clicked += BrowseTracksButton_Clicked;
-            NextButton.Clicked += NextButton_Clicked;
-            RepeatOneButton.Clicked += RepeatOneButton_Clicked;
-            PlayPauseButton.Clicked += PlayPauseButton_Clicked;
-            ShuffleButton.Clicked += ShuffleButton_Clicked;
-            PreviousButton.Clicked += PreviousButton_Clicked;
-            DeleteEvent += Window_DeleteEvent;
-            VolumeBar.ValueChanged += VolumeBar_ValueChanged;
-            VolumeBar.SetRange(0, 1);
+            
         }
 
+        // Controls
         private void VolumeBar_ValueChanged(object sender, EventArgs e)
         {
             if (player.Playing)
@@ -117,10 +93,10 @@ namespace FRESHMusicPlayer
         {
             var time = TimeSpan.FromSeconds(Math.Floor(player.CurrentBackend.CurrentTime.TotalSeconds));
             ProgressLabel1.Text = time.ToString(@"mm\:ss");
-            SeekBar.Value = time.TotalSeconds;
+            //SeekBar.Value = time.TotalSeconds;
             player.AvoidNextQueue = false;
         }
-
+        // Import Tab
         private void BrowseTracksButton_Clicked(object sender, EventArgs e)
         {
             using var openFileDialog1 = new FileChooserDialog("Choose file",
@@ -135,7 +111,9 @@ namespace FRESHMusicPlayer
             player.PlayMusic();
             progressTimer.Start();
         }
+        // Tracks Tab
 
+        // Other
         private void Window_DeleteEvent(object sender, DeleteEventArgs a)
         {
             Application.Quit();
